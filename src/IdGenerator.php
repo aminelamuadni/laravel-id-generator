@@ -26,7 +26,7 @@ class IdGenerator
         $driver = DB::connection($connection)->getDriverName();
         $database = DB::connection($connection)->getDatabaseName();
 
-        if ($driver == 'mysql') {
+        if (in_array($driver, ['mysql', 'mariadb'])) {
             $sql = 'SELECT column_name AS "column_name",data_type AS "data_type",column_type AS "column_type" ';
             $sql .= 'FROM information_schema.columns ';
             $sql .= 'WHERE table_schema=:database AND table_name=:table';
@@ -47,7 +47,7 @@ class IdGenerator
                 //column_type not available in postgres SQL
                 //mysql 8 optional display width for int,bigint numeric field
 
-                if ($driver == 'mysql') {
+                if (in_array($driver, ['mysql', 'mariadb'])) {
                     //example: column_type int(11) to 11
                     preg_match("/(?<=\().+?(?=\))/", $col->column_type, $tblFieldLength);
                     if (count($tblFieldLength)) {
